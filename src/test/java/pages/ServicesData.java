@@ -1,10 +1,15 @@
 package pages;
 
+import io.qameta.allure.Step;
 import model.MarriageApplicationData;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServicesData extends BasePage {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServicesData.class);
 
     private final By registrationDateField =
             By.xpath("//label[contains(text(), 'Дата регистрации')]/following::input[1]");
@@ -29,7 +34,15 @@ public class ServicesData extends BasePage {
         super(driver);
     }
 
+    @Step("Заполняем данные услуги: дата регистрации {data.registrationDate}, новая фамилия {data.newLastName}")
     public ServicesData fillMarriageServiceData(MarriageApplicationData data) {
+        logger.info("Заполняем данные услуги: дата регистрации={}, новая фамилия={}, супруг(а): {} {} {}",
+                data.getRegistrationDate(),
+                data.getNewLastName(),
+                data.getSpouseLastName(),
+                data.getSpouseFirstName(),
+                data.getSpouseMiddleName());
+
         type(registrationDateField,   data.getRegistrationDate());
         type(newLastNameField,        data.getNewLastName());
         type(spouseLastNameField,     data.getSpouseLastName());
@@ -37,10 +50,13 @@ public class ServicesData extends BasePage {
         type(spouseMiddleNameField,   data.getSpouseMiddleName());
         type(spouseBirthDateField,    data.getSpouseBirthDate());
         type(spousePassportField,     data.getSpousePassport());
+
         return this;
     }
 
+    @Step("Отправляем форму услуги")
     public ServicesData submit() {
+        logger.info("Нажимаем кнопку отправки формы услуги");
         click(submitButton);
         return this;
     }

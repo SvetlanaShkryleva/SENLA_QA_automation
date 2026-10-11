@@ -1,10 +1,15 @@
 package pages;
 
+import io.qameta.allure.Step;
 import model.MarriageApplicationData;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CitizensData extends BasePage {
+
+    private static final Logger logger = LoggerFactory.getLogger(CitizensData.class);
 
     private final By lastNameField   = By.xpath("//label[contains(text(), 'Фамилия')]/following::input[1]");
     private final By firstNameField  = By.xpath("//label[contains(text(), 'Имя')]/following::input[1]");
@@ -21,7 +26,12 @@ public class CitizensData extends BasePage {
         super(driver);
     }
 
+    @Step("Заполняем данные гражданина: {data.citizenLastName} {data.citizenFirstName}")
     public CitizensData fillCitizenData(MarriageApplicationData data) {
+        logger.info("Заполняем данные гражданина: {} {} {}",
+                data.getCitizenLastName(),
+                data.getCitizenFirstName(),
+                data.getCitizenMiddleName());
         type(lastNameField,   data.getCitizenLastName());
         type(firstNameField,  data.getCitizenFirstName());
         type(middleNameField, data.getCitizenMiddleName());
@@ -34,7 +44,9 @@ public class CitizensData extends BasePage {
         return this;
     }
 
+    @Step("Нажимаем 'Далее' на форме гражданина")
     public CitizensData clickNext() {
+        logger.info("Нажимаем 'Далее' на форме гражданина");
         click(nextButton);
         return this;
     }
