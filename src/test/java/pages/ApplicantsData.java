@@ -1,7 +1,7 @@
 package pages;
 
 import io.qameta.allure.Step;
-import model.MarriageApplicationData;
+import model.BaseApplicationData;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class ApplicantsData extends BasePage {
     }
 
     @Step("Заполняем данные заявителя: {data.applicantLastName} {data.applicantFirstName}")
-    public ApplicantsData fillApplicantData(MarriageApplicationData data) {
+    public ApplicantsData fillApplicantData(BaseApplicationData data) {
         logger.info("Заполняем данные заявителя: {} {} {}",
                 data.getApplicantLastName(),
                 data.getApplicantFirstName(),

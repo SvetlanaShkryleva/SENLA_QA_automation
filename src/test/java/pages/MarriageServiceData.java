@@ -7,9 +7,9 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServicesData extends BasePage {
+public class MarriageServiceData extends BasePage {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServicesData.class);
+    private static final Logger logger = LoggerFactory.getLogger(MarriageServiceData.class);
 
     private final By registrationDateField =
             By.xpath("//label[contains(text(), 'Дата регистрации')]/following::input[1]");
@@ -30,12 +30,12 @@ public class ServicesData extends BasePage {
     private final By submitButton =
             By.xpath("/html/body/div[2]/div[3]/div/div/div[3]/button[3]");
 
-    public ServicesData(WebDriver driver) {
+    public MarriageServiceData(WebDriver driver) {
         super(driver);
     }
 
     @Step("Заполняем данные услуги: дата регистрации {data.registrationDate}, новая фамилия {data.newLastName}")
-    public ServicesData fillMarriageServiceData(MarriageApplicationData data) {
+    public MarriageServiceData fillMarriageServiceData(MarriageApplicationData data) {
         logger.info("Заполняем данные услуги: дата регистрации={}, новая фамилия={}, супруг(а): {} {} {}",
                 data.getRegistrationDate(),
                 data.getNewLastName(),
@@ -55,7 +55,7 @@ public class ServicesData extends BasePage {
     }
 
     @Step("Отправляем форму услуги")
-    public ServicesData submit() {
+    public MarriageServiceData submit() {
         logger.info("Нажимаем кнопку отправки формы услуги");
         click(submitButton);
         return this;

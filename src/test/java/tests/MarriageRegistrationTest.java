@@ -15,7 +15,7 @@ import pages.ApplicationSuccessPage;
 import pages.CitizensData;
 import pages.LoginPage;
 import pages.ServiceChoice;
-import pages.ServicesData;
+import pages.MarriageServiceData;
 import utils.ApplicationNumberStorage;
 
 @Epic("ЗАГС")
@@ -54,7 +54,7 @@ public class MarriageRegistrationTest extends BaseTest {
                 .clickNext();
         logger.info("Заполнена форма данных гражданина");
 
-        new ServicesData(driver)
+        new MarriageServiceData(driver)
                 .fillMarriageServiceData(data)
                 .submit();
         logger.info("Форма услуги отправлена");
@@ -63,7 +63,9 @@ public class MarriageRegistrationTest extends BaseTest {
                 new ApplicationSuccessPage(driver).getApplicationNumber();
         logger.info("Считан номер заявки: {}", applicationNumber);
 
-        ApplicationNumberStorage.save(applicationNumber);
+        ApplicationNumberStorage.save(ApplicationNumberStorage.MARRIAGE, applicationNumber);
+        logger.info("Создана заявка № {}. Номер сохранён под ключом '{}'.",
+                applicationNumber, ApplicationNumberStorage.MARRIAGE);
         logger.info("Номер заявки сохранён в target/application-number.txt");
 
         logger.info("=== УСПЕШНОЕ ЗАВЕРШЕНИЕ теста registerMarriage ===");

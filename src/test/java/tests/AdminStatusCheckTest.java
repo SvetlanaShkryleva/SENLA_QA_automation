@@ -7,7 +7,8 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pages.AdminData;
@@ -25,14 +26,15 @@ public class AdminStatusCheckTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminStatusCheckTest.class);
 
-    @Test
+    @ParameterizedTest(name = "Проверка статуса заявки: {0}")
+    @ValueSource(strings = {"marriage", "birth", "death"})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Проверка, что созданная заявка видна администратору со статусом 'На рассмотрении'")
-    public void adminSeesMarriageApplicationStatus() {
-        logger.info("=== СТАРТ теста adminSeesMarriageApplicationStatus ===");
+    public void adminSeesApplicationStatus(String serviceKey) {
+        logger.info("=== СТАРТ теста adminSeesApplicationStatus для услуги '{}' ===", serviceKey);
 
-        String applicationNumber = ApplicationNumberStorage.read();
-        logger.info("Прочитан номер заявки из файла: {}", applicationNumber);
+        String applicationNumber = ApplicationNumberStorage.read(serviceKey);
+        logger.info("Прочитан номер заявки из файла по ключу '{}': {}", serviceKey, applicationNumber);
 
         new LoginPage(driver).clickLoginAsAdmin();
         logger.info("Выполнен вход как администратор");
@@ -47,7 +49,7 @@ public class AdminStatusCheckTest extends BaseTest {
         logger.info("Таблица заявок загружена");
 
         assertTrue(table.hasRowWithId(applicationNumber),
-                "Заявка № " + applicationNumber + " не найдена в таблице администратора");
+                "Заявка № " + applicationNumber + " (услуга '" + serviceKey + "') не найдена в таблице администратора");
         logger.info("Заявка № {} найдена в таблице", applicationNumber);
 
         String actualStatus = table.getStatusTextById(applicationNumber);
@@ -56,9 +58,9 @@ public class AdminStatusCheckTest extends BaseTest {
         assertAll(
                 () -> assertEquals("На рассмотрении", actualStatus,
                         "Заявка № " + applicationNumber
-                                + ": ожидался статус 'На рассмотрении', получен '" + actualStatus + "'")
+                                + " (услуга '" + serviceKey + "'): ожидался статус 'На рассмотрении', получен '" + actualStatus + "'")
         );
 
-        logger.info("=== УСПЕШНОЕ ЗАВЕРШЕНИЕ теста adminSeesMarriageApplicationStatus ===");
+        logger.info("=== УСПЕШНОЕ ЗАВЕРШЕНИЕ теста для услуги '{}' ===", serviceKey);
     }
 }
