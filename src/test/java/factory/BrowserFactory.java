@@ -2,6 +2,7 @@ package factory;
 
 import config.BrowserConfig;
 import config.ConfigReader;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -22,13 +23,18 @@ public class BrowserFactory {
             case "chrome":
                 ChromeOptions chromeOpts = new ChromeOptions();
                 chromeOpts.addArguments("--disable-ipv6");
+                chromeOpts.setPageLoadStrategy(PageLoadStrategy.EAGER);
                 return new ChromeDriver(chromeOpts);
 
             case "firefox":
-                return new FirefoxDriver(new FirefoxOptions());
+                FirefoxOptions firefoxOpts = new FirefoxOptions();
+                firefoxOpts.setPageLoadStrategy(PageLoadStrategy.EAGER);
+                return new FirefoxDriver(firefoxOpts);
 
             case "edge":
-                return new EdgeDriver(new EdgeOptions());
+                EdgeOptions edgeOpts = new EdgeOptions();
+                edgeOpts.setPageLoadStrategy(PageLoadStrategy.EAGER);
+                return new EdgeDriver(edgeOpts);
 
             default:
                 throw new IllegalArgumentException(
