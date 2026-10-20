@@ -6,16 +6,17 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
-import model.DeathApplicationData;
+import model.DeathApplicationDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pages.ApplicantsData;
+import pages.ApplicantForm;
 import pages.ApplicationSuccessPage;
-import pages.CitizensData;
-import pages.DeathServiceData;
+import pages.CitizenForm;
+import pages.DeathServiceForm;
 import pages.LoginPage;
-import pages.ServiceChoice;
+import pages.ServiceChoicePage;
 import utils.ApplicationNumberStorage;
 
 @Epic("ЗАГС")
@@ -25,42 +26,58 @@ public class DeathRegistrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DeathRegistrationTest.class);
 
+    private LoginPage loginPage;
+    private ApplicantForm applicantForm;
+    private ServiceChoicePage serviceChoicePage;
+    private CitizenForm citizenForm;
+    private DeathServiceForm deathServiceForm;
+    private ApplicationSuccessPage applicationSuccessPage;
+
+    @BeforeEach
+    public void initPages() {
+        loginPage = new LoginPage(driver);
+        applicantForm = new ApplicantForm(driver);
+        serviceChoicePage = new ServiceChoicePage(driver);
+        citizenForm = new CitizenForm(driver);
+        deathServiceForm = new DeathServiceForm(driver);
+        applicationSuccessPage = new ApplicationSuccessPage(driver);
+    }
+
     @Test
     @Severity(SeverityLevel.CRITICAL)
     @Description("Создание заявки на регистрацию смерти")
     public void registerDeath() {
         logger.info("=== СТАРТ теста registerDeath ===");
 
-        DeathApplicationData data = buildDeathData();
+        DeathApplicationDTO data = buildDeathData();
         logger.info("Подготовлены данные заявителя: {} {} {}",
                 data.getApplicantLastName(),
                 data.getApplicantFirstName(),
                 data.getApplicantMiddleName());
 
-        new LoginPage(driver).clickLoginAsUser();
+        loginPage.clickLoginAsUser();
         logger.info("Выполнен вход как пользователь");
 
-        new ApplicantsData(driver)
+        applicantForm
                 .fillApplicantData(data)
                 .clickNext();
         logger.info("Заполнена форма данных заявителя");
 
-        new ServiceChoice(driver)
+        serviceChoicePage
                 .chooseService("Регистрация смерти");
         logger.info("Выбрана услуга 'Регистрация смерти'");
 
-        new CitizensData(driver)
+        citizenForm
                 .fillCitizenData(data)
                 .clickNext();
         logger.info("Заполнена форма данных гражданина");
 
-        new DeathServiceData(driver)
+        deathServiceForm
                 .fillDeathServiceData(data)
                 .submit();
         logger.info("Форма услуги 'Смерть' отправлена");
 
-        String applicationNumber =
-                new ApplicationSuccessPage(driver).getApplicationNumber();
+        String applicationNumber = applicationSuccessPage.getApplicationNumber();
         ApplicationNumberStorage.save(ApplicationNumberStorage.DEATH, applicationNumber);
         logger.info("Создана заявка № {}. Номер сохранён под ключом '{}'.",
                 applicationNumber, ApplicationNumberStorage.DEATH);
@@ -71,8 +88,8 @@ public class DeathRegistrationTest extends BaseTest {
     /**
      * Собирает VO с данными для регистрации смерти.
      */
-    private DeathApplicationData buildDeathData() {
-        DeathApplicationData data = new DeathApplicationData();
+    private DeathApplicationDTO buildDeathData() {
+        DeathApplicationDTO data = new DeathApplicationDTO();
 
         // ===== Данные заявителя (форма 1) =====
         data.setApplicantLastName("Кузнецов");

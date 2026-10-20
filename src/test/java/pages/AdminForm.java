@@ -6,9 +6,9 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AdminData extends BasePage {
+public class AdminForm extends BasePage {
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminData.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminForm.class);
 
     private final By lastNameField   = By.xpath("//label[contains(text(), 'Фамилия')]/following::input[1]");
     private final By firstNameField  = By.xpath("//label[contains(text(), 'Имя')]/following::input[1]");
@@ -20,12 +20,12 @@ public class AdminData extends BasePage {
     private final By nextButton =
             By.xpath("//button[contains(text(), 'Далее')]");
 
-    public AdminData(WebDriver driver) {
+    public AdminForm(WebDriver driver) {
         super(driver);
     }
 
     @Step("Заполняем данные администратора: {lastName} {firstName} {middleName}")
-    public AdminData fillAdminData(String lastName, String firstName, String middleName,
+    public AdminForm fillAdminData(String lastName, String firstName, String middleName,
                                    String phone, String passport, String birthDate) {
         logger.info("Заполняем форму администратора: {} {} {}, тел. {}, паспорт {}, дата рождения {}",
                 lastName, firstName, middleName, phone, passport, birthDate);
@@ -39,7 +39,7 @@ public class AdminData extends BasePage {
     }
 
     @Step("Нажимаем 'Далее' на форме администратора")
-    public AdminData clickNext() {
+    public AdminForm clickNext() {
         logger.info("Нажимаем 'Далее'");
         click(nextButton);
         return this;

@@ -19,21 +19,20 @@ public class LoginPage extends BasePage {
 
     public LoginPage(WebDriver driver) {
         super(driver);
+        waitForPageLoad();
     }
 
     @Step("Нажимаем кнопку 'Войти как пользователь'")
     public LoginPage clickLoginAsUser() {
         logger.info("Нажимаем 'Войти как пользователь'");
-        WebElement button = waitForClickable(loginAsUserButton);
-        button.click();
+        click(loginAsUserButton);
         return this;
     }
 
     @Step("Нажимаем кнопку 'Войти как администратор'")
     public LoginPage clickLoginAsAdmin() {
         logger.info("Нажимаем 'Войти как администратор'");
-        WebElement button = waitForClickable(loginAsAdminButton);
-        button.click();
+        click(loginAsAdminButton);
         return this;
     }
 }

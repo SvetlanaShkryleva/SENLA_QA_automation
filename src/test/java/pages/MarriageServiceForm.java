@@ -1,15 +1,15 @@
 package pages;
 
 import io.qameta.allure.Step;
-import model.MarriageApplicationData;
+import model.MarriageApplicationDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MarriageServiceData extends BasePage {
+public class MarriageServiceForm extends BasePage {
 
-    private static final Logger logger = LoggerFactory.getLogger(MarriageServiceData.class);
+    private static final Logger logger = LoggerFactory.getLogger(MarriageServiceForm.class);
 
     private final By registrationDateField =
             By.xpath("//label[contains(text(), 'Дата регистрации')]/following::input[1]");
@@ -30,12 +30,12 @@ public class MarriageServiceData extends BasePage {
     private final By submitButton =
             By.xpath("/html/body/div[2]/div[3]/div/div/div[3]/button[3]");
 
-    public MarriageServiceData(WebDriver driver) {
+    public MarriageServiceForm(WebDriver driver) {
         super(driver);
     }
 
     @Step("Заполняем данные услуги: дата регистрации {data.registrationDate}, новая фамилия {data.newLastName}")
-    public MarriageServiceData fillMarriageServiceData(MarriageApplicationData data) {
+    public MarriageServiceForm fillMarriageServiceData(MarriageApplicationDTO data) {
         logger.info("Заполняем данные услуги: дата регистрации={}, новая фамилия={}, супруг(а): {} {} {}",
                 data.getRegistrationDate(),
                 data.getNewLastName(),
@@ -55,7 +55,7 @@ public class MarriageServiceData extends BasePage {
     }
 
     @Step("Отправляем форму услуги")
-    public MarriageServiceData submit() {
+    public MarriageServiceForm submit() {
         logger.info("Нажимаем кнопку отправки формы услуги");
         click(submitButton);
         return this;

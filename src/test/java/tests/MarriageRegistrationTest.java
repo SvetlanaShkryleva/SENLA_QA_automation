@@ -6,16 +6,17 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
-import model.MarriageApplicationData;
+import model.MarriageApplicationDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pages.ApplicantsData;
+import pages.ApplicantForm;
 import pages.ApplicationSuccessPage;
-import pages.CitizensData;
+import pages.CitizenForm;
 import pages.LoginPage;
-import pages.ServiceChoice;
-import pages.MarriageServiceData;
+import pages.MarriageServiceForm;
+import pages.ServiceChoicePage;
 import utils.ApplicationNumberStorage;
 
 @Epic("ЗАГС")
@@ -25,48 +26,63 @@ public class MarriageRegistrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MarriageRegistrationTest.class);
 
+    private LoginPage loginPage;
+    private ApplicantForm applicantForm;
+    private ServiceChoicePage serviceChoicePage;
+    private CitizenForm citizenForm;
+    private MarriageServiceForm marriageServiceForm;
+    private ApplicationSuccessPage applicationSuccessPage;
+
+    @BeforeEach
+    public void initPages() {
+        loginPage = new LoginPage(driver);
+        applicantForm = new ApplicantForm(driver);
+        serviceChoicePage = new ServiceChoicePage(driver);
+        citizenForm = new CitizenForm(driver);
+        marriageServiceForm = new MarriageServiceForm(driver);
+        applicationSuccessPage = new ApplicationSuccessPage(driver);
+    }
+
     @Test
     @Severity(SeverityLevel.CRITICAL)
     @Description("Создание заявки на регистрацию брака и сохранение её номера")
     public void registerMarriage() {
         logger.info("=== СТАРТ теста registerMarriage ===");
 
-        MarriageApplicationData data = buildMarriageData();
+        MarriageApplicationDTO data = buildMarriageData();
         logger.info("Подготовлены данные заявителя: {} {} {}",
                 data.getApplicantLastName(),
                 data.getApplicantFirstName(),
                 data.getApplicantMiddleName());
 
-        new LoginPage(driver).clickLoginAsUser();
+        loginPage.clickLoginAsUser();
         logger.info("Выполнен вход как пользователь");
 
-        new ApplicantsData(driver)
+        applicantForm
                 .fillApplicantData(data)
                 .clickNext();
         logger.info("Заполнена форма данных заявителя");
 
-        new ServiceChoice(driver)
+        serviceChoicePage
                 .chooseService("Регистрация брака");
         logger.info("Выбрана услуга 'Регистрация брака'");
 
-        new CitizensData(driver)
+        citizenForm
                 .fillCitizenData(data)
                 .clickNext();
         logger.info("Заполнена форма данных гражданина");
 
-        new MarriageServiceData(driver)
+        marriageServiceForm
                 .fillMarriageServiceData(data)
                 .submit();
         logger.info("Форма услуги отправлена");
 
-        String applicationNumber =
-                new ApplicationSuccessPage(driver).getApplicationNumber();
+        String applicationNumber = applicationSuccessPage.getApplicationNumber();
         logger.info("Считан номер заявки: {}", applicationNumber);
 
         ApplicationNumberStorage.save(ApplicationNumberStorage.MARRIAGE, applicationNumber);
         logger.info("Создана заявка № {}. Номер сохранён под ключом '{}'.",
                 applicationNumber, ApplicationNumberStorage.MARRIAGE);
-        logger.info("Номер заявки сохранён в target/application-number.txt");
 
         logger.info("=== УСПЕШНОЕ ЗАВЕРШЕНИЕ теста registerMarriage ===");
     }
@@ -74,8 +90,8 @@ public class MarriageRegistrationTest extends BaseTest {
     /**
      * Собирает VO с данными для регистрации брака.
      */
-    private MarriageApplicationData buildMarriageData() {
-        MarriageApplicationData data = new MarriageApplicationData();
+    private MarriageApplicationDTO buildMarriageData() {
+        MarriageApplicationDTO data = new MarriageApplicationDTO();
 
         data.setApplicantLastName("Иванов");
         data.setApplicantFirstName("Иван");

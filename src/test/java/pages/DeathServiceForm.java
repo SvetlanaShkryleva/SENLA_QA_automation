@@ -1,15 +1,15 @@
 package pages;
 
 import io.qameta.allure.Step;
-import model.DeathApplicationData;
+import model.DeathApplicationDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeathServiceData extends BasePage {
+public class DeathServiceForm extends BasePage {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeathServiceData.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeathServiceForm.class);
 
     private final By deathDateField =
             By.xpath("//label[contains(text(), 'Дата смерти')]/following::input[1]");
@@ -19,12 +19,12 @@ public class DeathServiceData extends BasePage {
     private final By submitButton =
             By.xpath("/html/body/div[2]/div[3]/div/div/div[3]/button[3]");
 
-    public DeathServiceData(WebDriver driver) {
+    public DeathServiceForm(WebDriver driver) {
         super(driver);
     }
 
     @Step("Заполняем данные услуги 'Смерть': дата смерти {data.deathDate}, место смерти {data.placeOfDeath}")
-    public DeathServiceData fillDeathServiceData(DeathApplicationData data) {
+    public DeathServiceForm fillDeathServiceData(DeathApplicationDTO data) {
         logger.info("Заполняем данные услуги 'Смерть': дата смерти={}, место смерти={}",
                 data.getDeathDate(),
                 data.getPlaceOfDeath());
@@ -36,7 +36,7 @@ public class DeathServiceData extends BasePage {
     }
 
     @Step("Отправляем форму услуги 'Смерть'")
-    public DeathServiceData submit() {
+    public DeathServiceForm submit() {
         logger.info("Нажимаем кнопку отправки формы услуги 'Смерть'");
         click(submitButton);
         return this;

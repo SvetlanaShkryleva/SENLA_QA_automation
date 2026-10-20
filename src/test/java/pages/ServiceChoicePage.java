@@ -6,9 +6,9 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServiceChoice extends BasePage {
+public class ServiceChoicePage extends BasePage {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServiceChoice.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceChoicePage.class);
 
     private static final String SERVICE_BUTTON_TEMPLATE =
             "//button[contains(text(), '%s')]";
@@ -16,12 +16,12 @@ public class ServiceChoice extends BasePage {
     private final By nextButton =
             By.cssSelector("button:nth-child(2)");
 
-    public ServiceChoice(WebDriver driver) {
+    public ServiceChoicePage(WebDriver driver) {
         super(driver);
     }
 
     @Step("Выбираем услугу: {serviceName}")
-    public ServiceChoice chooseService(String serviceName) {
+    public ServiceChoicePage chooseService(String serviceName) {
         logger.info("Выбираем услугу: {}", serviceName);
         By serviceButton = By.xpath(String.format(SERVICE_BUTTON_TEMPLATE, serviceName));
         click(serviceButton);
@@ -29,7 +29,7 @@ public class ServiceChoice extends BasePage {
     }
 
     @Step("Нажимаем 'Далее' на странице выбора услуги")
-    public ServiceChoice clickNext() {
+    public ServiceChoicePage clickNext() {
         logger.info("Нажимаем 'Далее' на странице выбора услуги");
         click(nextButton);
         return this;

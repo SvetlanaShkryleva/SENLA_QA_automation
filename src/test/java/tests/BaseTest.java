@@ -1,8 +1,8 @@
 package tests;
 
+import factory.BrowserFactory;
 import config.ConfigReader;
 import config.Credentials;
-import factory.DriverSingleton;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
@@ -18,7 +18,7 @@ public abstract class BaseTest {
     @BeforeEach
     public void setUp() {
         logger.info("=== Установка драйвера ===");
-        driver = DriverSingleton.getDriver();
+        driver = BrowserFactory.getDriver();
         openApp();
         logger.info("Драйвер готов, приложение открыто");
     }
@@ -26,7 +26,7 @@ public abstract class BaseTest {
     @AfterEach
     public void tearDown() {
         logger.info("=== Закрытие драйвера ===");
-        DriverSingleton.quitDriver();
+        BrowserFactory.quitDriver();
         logger.info("Тест завершён");
     }
 

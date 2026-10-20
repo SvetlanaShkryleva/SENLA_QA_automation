@@ -1,15 +1,15 @@
 package pages;
 
 import io.qameta.allure.Step;
-import model.BirthApplicationData;
+import model.BirthApplicationDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BirthServiceData extends BasePage {
+public class BirthServiceForm extends BasePage {
 
-    private static final Logger logger = LoggerFactory.getLogger(BirthServiceData.class);
+    private static final Logger logger = LoggerFactory.getLogger(BirthServiceForm.class);
 
     private final By placeOfBirthField =
             By.xpath("//label[contains(text(), 'Место рождения')]/following::input[1]");
@@ -25,12 +25,12 @@ public class BirthServiceData extends BasePage {
     private final By submitButton =
             By.xpath("/html/body/div[2]/div[3]/div/div/div[3]/button[3]");
 
-    public BirthServiceData(WebDriver driver) {
+    public BirthServiceForm(WebDriver driver) {
         super(driver);
     }
 
     @Step("Заполняем данные услуги 'Рождение': место рождения {data.placeOfBirth}")
-    public BirthServiceData fillBirthServiceData(BirthApplicationData data) {
+    public BirthServiceForm fillBirthServiceData(BirthApplicationDTO data) {
         logger.info("Заполняем данные услуги 'Рождение': место рождения={}, мать={}, отец={}, бабушка={}, дедушка={}",
                 data.getPlaceOfBirth(),
                 data.getMother(),
@@ -48,7 +48,7 @@ public class BirthServiceData extends BasePage {
     }
 
     @Step("Отправляем форму услуги 'Рождение'")
-    public BirthServiceData submit() {
+    public BirthServiceForm submit() {
         logger.info("Нажимаем кнопку отправки формы услуги 'Рождение'");
         click(submitButton);
         return this;

@@ -11,9 +11,43 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
+/**
+ * Фабрика драйвера + Singleton.
+ * Гарантирует, что во время прогона тестов существует ровно один экземпляр WebDriver.
+ */
 public class BrowserFactory {
 
-    public static WebDriver createDriver() {
+    private static WebDriver driver;
+
+    private BrowserFactory() {}
+
+    /**
+     * Возвращает единственный экземпляр WebDriver.
+     * Создаёт его при первом обращении, при последующих — возвращает существующий.
+     */
+    public static WebDriver getDriver() {
+        if (driver == null) {
+            driver = createDriver();
+            driver.manage().window().maximize();
+        }
+        return driver;
+    }
+
+    /**
+     * Закрывает браузер и обнуляет ссылку, чтобы следующий тест создал новый драйвер.
+     */
+    public static void quitDriver() {
+        if (driver != null) {
+            driver.quit();
+            driver = null;
+        }
+    }
+
+    /**
+     * Создаёт новый экземпляр WebDriver по настройкам из browser-config.json.
+     * Не сохраняет его в статическое поле — этим занимается getDriver().
+     */
+    private static WebDriver createDriver() {
         BrowserConfig config = ConfigReader.read();
         String browser = config.getBrowser().toLowerCase();
 

@@ -1,15 +1,15 @@
 package pages;
 
 import io.qameta.allure.Step;
-import model.BaseApplicationData;
+import model.BaseApplicationDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ApplicantsData extends BasePage {
+public class ApplicantForm extends BasePage {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicantsData.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApplicantForm.class);
 
     private final By lastNameField   = By.xpath("//label[contains(text(), 'Фамилия')]/following::input[1]");
     private final By firstNameField  = By.xpath("//label[contains(text(), 'Имя')]/following::input[1]");
@@ -21,12 +21,12 @@ public class ApplicantsData extends BasePage {
     private final By nextButton =
             By.cssSelector("button:nth-child(2)");
 
-    public ApplicantsData(WebDriver driver) {
+    public ApplicantForm(WebDriver driver) {
         super(driver);
     }
 
     @Step("Заполняем данные заявителя: {data.applicantLastName} {data.applicantFirstName}")
-    public ApplicantsData fillApplicantData(BaseApplicationData data) {
+    public ApplicantForm fillApplicantData(BaseApplicationDTO data) {
         logger.info("Заполняем данные заявителя: {} {} {}",
                 data.getApplicantLastName(),
                 data.getApplicantFirstName(),
@@ -41,7 +41,7 @@ public class ApplicantsData extends BasePage {
     }
 
     @Step("Нажимаем 'Далее' на форме заявителя")
-    public ApplicantsData clickNext() {
+    public ApplicantForm clickNext() {
         logger.info("Нажимаем 'Далее' на форме заявителя");
         click(nextButton);
         return this;

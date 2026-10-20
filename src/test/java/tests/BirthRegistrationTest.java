@@ -6,16 +6,17 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
-import model.BirthApplicationData;
+import model.BirthApplicationDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pages.ApplicantsData;
+import pages.ApplicantForm;
 import pages.ApplicationSuccessPage;
-import pages.BirthServiceData;
-import pages.CitizensData;
+import pages.BirthServiceForm;
+import pages.CitizenForm;
 import pages.LoginPage;
-import pages.ServiceChoice;
+import pages.ServiceChoicePage;
 import utils.ApplicationNumberStorage;
 
 @Epic("ЗАГС")
@@ -25,43 +26,58 @@ public class BirthRegistrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(BirthRegistrationTest.class);
 
+    private LoginPage loginPage;
+    private ApplicantForm applicantForm;
+    private ServiceChoicePage serviceChoicePage;
+    private CitizenForm citizenForm;
+    private BirthServiceForm birthServiceForm;
+    private ApplicationSuccessPage applicationSuccessPage;
+
+    @BeforeEach
+    public void initPages() {
+        loginPage = new LoginPage(driver);
+        applicantForm = new ApplicantForm(driver);
+        serviceChoicePage = new ServiceChoicePage(driver);
+        citizenForm = new CitizenForm(driver);
+        birthServiceForm = new BirthServiceForm(driver);
+        applicationSuccessPage = new ApplicationSuccessPage(driver);
+    }
+
     @Test
     @Severity(SeverityLevel.CRITICAL)
     @Description("Создание заявки на регистрацию рождения")
     public void registerBirth() {
         logger.info("=== СТАРТ теста registerBirth ===");
 
-        BirthApplicationData data = buildBirthData();
+        BirthApplicationDTO data = buildBirthData();
         logger.info("Подготовлены данные заявителя: {} {} {}",
                 data.getApplicantLastName(),
                 data.getApplicantFirstName(),
                 data.getApplicantMiddleName());
 
-        new LoginPage(driver).clickLoginAsUser();
+        loginPage.clickLoginAsUser();
         logger.info("Выполнен вход как пользователь");
 
-        new ApplicantsData(driver)
+        applicantForm
                 .fillApplicantData(data)
                 .clickNext();
         logger.info("Заполнена форма данных заявителя");
 
-        new ServiceChoice(driver)
+        serviceChoicePage
                 .chooseService("Регистрация рождения");
         logger.info("Выбрана услуга 'Регистрация рождения'");
 
-        new CitizensData(driver)
+        citizenForm
                 .fillCitizenData(data)
                 .clickNext();
         logger.info("Заполнена форма данных гражданина");
 
-        new BirthServiceData(driver)
+        birthServiceForm
                 .fillBirthServiceData(data)
                 .submit();
         logger.info("Форма услуги 'Рождение' отправлена");
 
-        // Считываем номер заявки и сохраняем под ключом BIRTH
-        String applicationNumber =
-                new ApplicationSuccessPage(driver).getApplicationNumber();
+        String applicationNumber = applicationSuccessPage.getApplicationNumber();
         ApplicationNumberStorage.save(ApplicationNumberStorage.BIRTH, applicationNumber);
         logger.info("Создана заявка № {}. Номер сохранён под ключом '{}'.",
                 applicationNumber, ApplicationNumberStorage.BIRTH);
@@ -72,8 +88,8 @@ public class BirthRegistrationTest extends BaseTest {
     /**
      * Собирает VO с данными для регистрации рождения.
      */
-    private BirthApplicationData buildBirthData() {
-        BirthApplicationData data = new BirthApplicationData();
+    private BirthApplicationDTO buildBirthData() {
+        BirthApplicationDTO data = new BirthApplicationDTO();
 
         // ===== Данные заявителя (форма 1) =====
         data.setApplicantLastName("Сидоров");
