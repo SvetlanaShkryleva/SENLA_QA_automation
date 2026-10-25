@@ -1,0 +1,22 @@
+{
+  "applicantLastName": "Иванов",
+  "applicantFirstName": "Иван",
+  "applicantMiddleName": "Иванович",
+  "applicantPhone": "89999999999",
+  "applicantPassport": "00000000",
+  "applicantAddress": "ул. Ленина, д. 1",
+  "citizenLastName": "Петрова",
+  "citizenFirstName": "Мария",
+  "citizenMiddleName": "Сергеевна",
+  "citizenBirthDate": "01.01.1995",
+  "citizenPassport": "11111111",
+  "citizenGender": "Женский",
+  "citizenAddress": "ул. Пушкина, д. 2",
+  "registrationDate": "11.11.2025",
+  "newLastName": "Иванова",
+  "spouseLastName": "Иванова",
+  "spouseFirstName": "Мария",
+  "spouseMiddleName": "Сергеевна",
+  "spouseBirthDate": "01.01.1995",
+  "spousePassport": "11111111"
+}

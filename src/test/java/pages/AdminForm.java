@@ -1,8 +1,10 @@
 package pages;
 
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
+import model.ui.AdminDTO;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,38 +12,52 @@ public class AdminForm extends BasePage {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminForm.class);
 
-    private final By lastNameField   = By.xpath("//label[contains(text(), 'Фамилия')]/following::input[1]");
-    private final By firstNameField  = By.xpath("//label[contains(text(), 'Имя')]/following::input[1]");
-    private final By middleNameField = By.xpath("//label[contains(text(), 'Отчество')]/following::input[1]");
-    private final By phoneField      = By.xpath("//label[contains(text(), 'Телефон')]/following::input[1]");
-    private final By passportField   = By.xpath("//label[contains(text(), 'Номер паспорта')]/following::input[1]");
-    private final By birthDateField  = By.xpath("//label[contains(text(), 'Дата рождения')]/following::input[1]");
+    @FindBy(xpath = "//label[contains(text(), 'Фамилия')]/following::input[1]")
+    private WebElement lastNameField;
 
-    private final By nextButton =
-            By.xpath("//button[contains(text(), 'Далее')]");
+    @FindBy(xpath = "//label[contains(text(), 'Имя')]/following::input[1]")
+    private WebElement firstNameField;
+
+    @FindBy(xpath = "//label[contains(text(), 'Отчество')]/following::input[1]")
+    private WebElement middleNameField;
+
+    @FindBy(xpath = "//label[contains(text(), 'Телефон')]/following::input[1]")
+    private WebElement phoneField;
+
+    @FindBy(xpath = "//label[contains(text(), 'Номер паспорта')]/following::input[1]")
+    private WebElement passportField;
+
+    @FindBy(xpath = "//label[contains(text(), 'Дата рождения')]/following::input[1]")
+    private WebElement birthDateField;
+
+    @FindBy(xpath = "//button[contains(text(), 'Далее')]")
+    private WebElement nextButton;
 
     public AdminForm(WebDriver driver) {
         super(driver);
     }
 
-    @Step("Заполняем данные администратора: {lastName} {firstName} {middleName}")
-    public AdminForm fillAdminData(String lastName, String firstName, String middleName,
-                                   String phone, String passport, String birthDate) {
-        logger.info("Заполняем форму администратора: {} {} {}, тел. {}, паспорт {}, дата рождения {}",
-                lastName, firstName, middleName, phone, passport, birthDate);
-        type(lastNameField,   lastName);
-        type(firstNameField,  firstName);
-        type(middleNameField, middleName);
-        type(phoneField,      phone);
-        type(passportField,   passport);
-        type(birthDateField,  birthDate);
+    @Step("Заполняем данные администратора")
+    public AdminForm fill(AdminDTO admin) {
+        logger.info("Заполняем форму администратора: {} {} {}",
+                admin.getLastName(),
+                admin.getFirstName(),
+                admin.getMiddleName());
+
+        lastNameField.sendKeys(admin.getLastName());
+        firstNameField.sendKeys(admin.getFirstName());
+        middleNameField.sendKeys(admin.getMiddleName());
+        phoneField.sendKeys(admin.getPhone());
+        passportField.sendKeys(admin.getPassport());
+        birthDateField.sendKeys(admin.getBirthDate());
+
         return this;
     }
 
     @Step("Нажимаем 'Далее' на форме администратора")
     public AdminForm clickNext() {
         logger.info("Нажимаем 'Далее'");
-        click(nextButton);
+        nextButton.click();
         return this;
     }
 }

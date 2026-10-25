@@ -1,9 +1,9 @@
-package API.models;
+package model.api;
 
 import lombok.Data;
 
 @Data
-public class UserResponse {
+public class UserResponseDTO {
     private int applicantid;
     private int applicationid;
     private int citizenid;

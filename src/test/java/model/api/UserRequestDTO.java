@@ -1,9 +1,9 @@
-package API.models;
+package model.api;
 
 import lombok.Data;
 
 @Data
-public class UserRequest {
+public class UserRequestDTO {
 
     private String mode;
 

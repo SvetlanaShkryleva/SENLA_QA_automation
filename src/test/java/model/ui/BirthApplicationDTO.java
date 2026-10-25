@@ -1,5 +1,7 @@
-package model;
+package model.ui;
+
 import lombok.Data;
+
 @Data
 public class BirthApplicationDTO extends BaseApplicationDTO {
 

@@ -1,4 +1,4 @@
-package model;
+package model.ui;
 import lombok.Data;
 @Data
 public abstract class BaseApplicationDTO {

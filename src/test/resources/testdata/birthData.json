@@ -1,0 +1,20 @@
+{
+  "applicantLastName": "Сидоров",
+  "applicantFirstName": "Пётр",
+  "applicantMiddleName": "Петрович",
+  "applicantPhone": "89991112233",
+  "applicantPassport": "44444444",
+  "applicantAddress": "ул. Ленина, д. 10",
+  "citizenLastName": "Сидоров",
+  "citizenFirstName": "Михаил",
+  "citizenMiddleName": "Петрович",
+  "citizenBirthDate": "01.01.2024",
+  "citizenPassport": "55555555",
+  "citizenGender": "Мужской",
+  "citizenAddress": "ул. Ленина, д. 10",
+  "placeOfBirth": "г. Москва",
+  "mother": "Сидорова Анна Ивановна",
+  "father": "Сидоров Пётр Петрович",
+  "grandmother": "Сидорова Ольга Сергеевна",
+  "grandfather": "Сидоров Иван Иванович"
+}

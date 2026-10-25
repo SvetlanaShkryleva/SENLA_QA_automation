@@ -1,4 +1,4 @@
-package API.specs;
+package specs;
 
 import config.ConfigReader;
 import config.Credentials;

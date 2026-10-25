@@ -1,9 +1,9 @@
-package API.models;
+package model.api;
 
 import lombok.Data;
 
 @Data
-public class AdminRequest {
+public class AdminRequestDTO {
 
     private String dateofbirth;
     private String personalFirstName;

@@ -1,5 +1,6 @@
-package model;
+package model.ui;
 import lombok.Data;
+
 @Data
 public class MarriageApplicationDTO extends BaseApplicationDTO {
 
