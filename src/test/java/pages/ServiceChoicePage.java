@@ -3,35 +3,38 @@ package pages;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServiceChoice extends BasePage {
+public class ServiceChoicePage extends BasePage {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServiceChoice.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceChoicePage.class);
 
     private static final String SERVICE_BUTTON_TEMPLATE =
             "//button[contains(text(), '%s')]";
 
-    private final By nextButton =
-            By.cssSelector("button:nth-child(2)");
+    @FindBy(css = "button:nth-child(2)")
+    private WebElement nextButton;
 
-    public ServiceChoice(WebDriver driver) {
+    public ServiceChoicePage(WebDriver driver) {
         super(driver);
     }
 
     @Step("Выбираем услугу: {serviceName}")
-    public ServiceChoice chooseService(String serviceName) {
+    public ServiceChoicePage chooseService(String serviceName) {
         logger.info("Выбираем услугу: {}", serviceName);
+        // Селектор динамический — @FindBy не подойдёт
         By serviceButton = By.xpath(String.format(SERVICE_BUTTON_TEMPLATE, serviceName));
-        click(serviceButton);
+        driver.findElement(serviceButton).click();
         return this;
     }
 
     @Step("Нажимаем 'Далее' на странице выбора услуги")
-    public ServiceChoice clickNext() {
+    public ServiceChoicePage clickNext() {
         logger.info("Нажимаем 'Далее' на странице выбора услуги");
-        click(nextButton);
+        nextButton.click();
         return this;
     }
 }

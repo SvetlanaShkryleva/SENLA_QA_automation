@@ -1,0 +1,23 @@
+{
+  "mode": "wedding",
+  "personalLastName": "Иванов",
+  "personalFirstName": "Иван",
+  "personalMiddleName": "Иванович",
+  "personalPhoneNumber": "89999999999",
+  "personalNumberOfPassport": "00000000",
+  "personalAddress": "ул. Ленина, д. 1",
+  "citizenLastName": "Петрова",
+  "citizenFirstName": "Мария",
+  "citizenMiddleName": "Сергеевна",
+  "citizenBirthDate": "1995-01-01",
+  "citizenNumberOfPassport": "11111111",
+  "citizenGender": "Женский",
+  "citizenAddress": "ул. Пушкина, д. 2",
+  "dateOfMarriage": "2025-11-11",
+  "newLastName": "Иванова",
+  "anotherPersonLastName": "Иванова",
+  "anotherPersonFirstName": "Мария",
+  "anotherPersonMiddleName": "Сергеевна",
+  "birth_of_anotoherPerson": "1995-01-01",
+  "anotherPersonPassport": "11111111"
+}

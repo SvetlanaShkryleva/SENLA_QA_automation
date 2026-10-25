@@ -1,0 +1,17 @@
+{
+  "applicantLastName": "Кузнецов",
+  "applicantFirstName": "Андрей",
+  "applicantMiddleName": "Андреевич",
+  "applicantPhone": "89993334455",
+  "applicantPassport": "66666666",
+  "applicantAddress": "ул. Гагарина, д. 5",
+  "citizenLastName": "Кузнецов",
+  "citizenFirstName": "Николай",
+  "citizenMiddleName": "Петрович",
+  "citizenBirthDate": "15.05.1950",
+  "citizenPassport": "77777777",
+  "citizenGender": "Мужской",
+  "citizenAddress": "ул. Гагарина, д. 5",
+  "deathDate": "10.10.2026",
+  "placeOfDeath": "г. Санкт-Петербург"
+}
