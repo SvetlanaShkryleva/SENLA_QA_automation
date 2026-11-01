@@ -1,0 +1,8 @@
+name: Check access
+on: workflow_dispatch
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Curl baseUrl
+        run: curl -v -I -m 30 "${{ secrets.BASE_URL }}"
