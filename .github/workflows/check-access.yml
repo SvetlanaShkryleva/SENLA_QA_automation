@@ -1,8 +1,37 @@
 name: Check access
+
 on: workflow_dispatch
+
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: Curl baseUrl
-        run: curl -v -I -m 30 "${{ secrets.BASE_URL }}"
+      - name: Check multiple variants
+        run: |
+          BASE="${{ secrets.BASE_URL }}"
+          CHROME_UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
+          echo "=== 1. HEAD / (as before) ==="
+          curl -s -o /dev/null -w "status=%{http_code}\n" -I -m 30 "$BASE" || true
+
+          echo "=== 2. GET / with curl UA ==="
+          curl -s -o /dev/null -w "status=%{http_code}\n" -m 30 "$BASE" || true
+
+          echo "=== 3. GET / with Chrome UA ==="
+          curl -s -o /dev/null -w "status=%{http_code}\n" -m 30 -A "$CHROME_UA" "$BASE" || true
+
+          echo "=== 4. GET / with Chrome UA + Accept-Language ==="
+          curl -s -o /dev/null -w "status=%{http_code}\n" -m 30 \
+            -A "$CHROME_UA" \
+            -H "Accept: text/html,application/xhtml+xml" \
+            -H "Accept-Language: ru-RU,ru;q=0.9,en;q=0.8" \
+            "$BASE" || true
+
+          echo "=== 5. GET /login with Chrome UA ==="
+          curl -s -o /dev/null -w "status=%{http_code}\n" -m 30 -A "$CHROME_UA" "$BASE/login" || true
+
+          echo "=== 6. GET /api with Chrome UA ==="
+          curl -s -o /dev/null -w "status=%{http_code}\n" -m 30 -A "$CHROME_UA" "$BASE/api" || true
+
+          echo "=== 7. Response body for GET / with Chrome UA (first 300 chars) ==="
+          curl -s -m 30 -A "$CHROME_UA" "$BASE" | head -c 300 || true
