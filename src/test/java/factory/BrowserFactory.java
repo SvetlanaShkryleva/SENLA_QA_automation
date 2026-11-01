@@ -10,6 +10,8 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Фабрика драйвера + Singleton.
@@ -17,6 +19,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
  */
 public class BrowserFactory {
 
+    private static final Logger logger = LoggerFactory.getLogger(BrowserFactory.class);
     private static WebDriver driver;
 
     private BrowserFactory() {}
@@ -51,7 +54,7 @@ public class BrowserFactory {
         BrowserConfig config = ConfigReader.read();
         String browser = config.getBrowser().toLowerCase();
 
-        System.out.println("Запускаем браузер: " + browser);
+        logger.info("Запускаем браузер: {}", browser);
 
         switch (browser) {
             case "chrome":

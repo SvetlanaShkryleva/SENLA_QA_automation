@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import specs.ApiSpecs;
 import utils.TestDataReader;
+import utils.AdminStaffIdStorage;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
@@ -51,6 +52,9 @@ public class AdminRegistrationApiTest {
 
         assertTrue(staffId > 0,
                 "staffid должен быть положительным, получен: " + staffId);
+
+        AdminStaffIdStorage.save(staffId);
+        logger.info("staffid={} сохранён в target/admin-staff-id.txt", staffId);
 
         logger.info("=== УСПЕШНОЕ ЗАВЕРШЕНИЕ createAdmin ===");
     }

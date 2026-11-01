@@ -20,9 +20,4 @@ public abstract class BasePage {
 
         PageFactory.initElements(driver, this);
     }
-
-    protected void waitForPageLoad() {
-        wait.until(d -> ((JavascriptExecutor) d)
-                .executeScript("return document.readyState").equals("complete"));
-    }
 }
