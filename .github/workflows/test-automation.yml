@@ -1,0 +1,90 @@
+name: Test Automation with Allure Report
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 09:00 МСК
+  workflow_dispatch:
+
+jobs:
+  test-and-report:
+    runs-on: [self-hosted, Windows, X64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: cucumber
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Create credentials.properties from secrets
+        shell: pwsh
+        run: |
+          $lines = @(
+            "username=${{ secrets.APP_USERNAME }}",
+            "password=${{ secrets.APP_PASSWORD }}",
+            "baseUrl=${{ secrets.BASE_URL }}",
+            "db.url=${{ secrets.DB_URL }}",
+            "db.user=${{ secrets.DB_USER }}",
+            "db.password=${{ secrets.DB_PASSWORD }}"
+          )
+          New-Item -ItemType Directory -Force -Path "src/test/resources" | Out-Null
+          $lines -join "`n" | Out-File -FilePath "src/test/resources/credentials.properties" -Encoding utf8 -NoNewline
+
+      - name: Run Tests (headless)
+        shell: pwsh
+        env:
+          HEADLESS: "true"
+        run: mvn clean test
+
+      - name: Generate Allure Report
+        if: always()
+        shell: pwsh
+        run: mvn allure:report
+
+      - name: Zip Allure Report
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path "target\site\allure-maven-plugin") {
+            Compress-Archive -Path "target\site\allure-maven-plugin\*" -DestinationPath "allure-report.zip" -Force
+          }
+
+      - name: Send Email with Allure Report
+        if: always()
+        shell: pwsh
+        run: |
+          $mail = New-Object System.Net.Mail.MailMessage
+          $mail.From = New-Object System.Net.Mail.MailAddress("${{ secrets.SMTP_USERNAME }}")
+          $mail.To.Add("${{ secrets.EMAIL_TO }}")
+          $mail.Subject = "Отчет о тестах: сборка #${{ github.run_number }} - ${{ job.status }}"
+          $mail.SubjectEncoding = [System.Text.Encoding]::UTF8
+
+          $body = @"
+          <h2>Результаты автотестов</h2>
+          <p><b>Проект:</b> ${{ github.repository }}</p>
+          <p><b>Номер сборки:</b> ${{ github.run_number }}</p>
+          <p><b>Статус:</b> ${{ job.status }}</p>
+          <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">Открыть запуск в GitHub Actions</a></p>
+          <p>Полный HTML-отчёт Allure во вложении.</p>
+          "@
+          $mail.Body = $body
+          $mail.BodyEncoding = [System.Text.Encoding]::UTF8
+          $mail.IsBodyHtml = $true
+
+          if (Test-Path "allure-report.zip") {
+            $attachment = New-Object System.Net.Mail.Attachment("allure-report.zip")
+            $mail.Attachments.Add($attachment)
+          }
+
+          $smtp = New-Object System.Net.Mail.SmtpClient("${{ secrets.SMTP_SERVER }}", [int]"${{ secrets.SMTP_PORT }}")
+          $smtp.EnableSsl = $true
+          $smtp.Credentials = New-Object System.Management.Automation.PSCredential(
+            "${{ secrets.SMTP_USERNAME }}",
+            (ConvertTo-SecureString "${{ secrets.SMTP_PASSWORD }}" -AsPlainText -Force)
+          )
+          $smtp.Send($mail)

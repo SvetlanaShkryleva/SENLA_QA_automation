@@ -15,11 +15,6 @@ import io.restassured.specification.ResponseSpecification;
 
 public class ApiSpecs {
 
-//    static {
-//        System.setProperty("jdk.tls.client.protocols", "TLSv1.2");
-//        System.setProperty("https.protocols", "TLSv1.2");
-//    }
-
     public static RequestSpecification requestSpec() {
         Credentials creds = ConfigReader.readCredentials();
 

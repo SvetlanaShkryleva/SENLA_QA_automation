@@ -13,10 +13,6 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Фабрика драйвера + Singleton.
- * Гарантирует, что во время прогона тестов существует ровно один экземпляр WebDriver.
- */
 public class BrowserFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(BrowserFactory.class);
@@ -24,10 +20,6 @@ public class BrowserFactory {
 
     private BrowserFactory() {}
 
-    /**
-     * Возвращает единственный экземпляр WebDriver.
-     * Создаёт его при первом обращении, при последующих — возвращает существующий.
-     */
     public static WebDriver getDriver() {
         if (driver == null) {
             driver = createDriver();
@@ -36,9 +28,6 @@ public class BrowserFactory {
         return driver;
     }
 
-    /**
-     * Закрывает браузер и обнуляет ссылку, чтобы следующий тест создал новый драйвер.
-     */
     public static void quitDriver() {
         if (driver != null) {
             driver.quit();
@@ -46,31 +35,50 @@ public class BrowserFactory {
         }
     }
 
-    /**
-     * Создаёт новый экземпляр WebDriver по настройкам из browser-config.json.
-     * Не сохраняет его в статическое поле — этим занимается getDriver().
-     */
     private static WebDriver createDriver() {
         BrowserConfig config = ConfigReader.read();
         String browser = config.getBrowser().toLowerCase();
 
-        logger.info("Запускаем браузер: {}", browser);
+        // headless включается через:
+        //   - переменную окружения HEADLESS=true  (используется в CI)
+        //   - системное свойство -Dheadless=true  (для локальных запусков)
+        boolean headless = Boolean.parseBoolean(
+                System.getProperty("headless",
+                        System.getenv().getOrDefault("HEADLESS", "false"))
+        );
+
+        logger.info("Запускаем браузер: {} (headless={})", browser, headless);
 
         switch (browser) {
             case "chrome":
                 ChromeOptions chromeOpts = new ChromeOptions();
                 chromeOpts.addArguments("--disable-ipv6");
                 chromeOpts.setPageLoadStrategy(PageLoadStrategy.EAGER);
+                if (headless) {
+                    chromeOpts.addArguments(
+                            "--headless=new",
+                            "--no-sandbox",
+                            "--disable-dev-shm-usage",
+                            "--disable-gpu",
+                            "--window-size=1920,1080"
+                    );
+                }
                 return new ChromeDriver(chromeOpts);
 
             case "firefox":
                 FirefoxOptions firefoxOpts = new FirefoxOptions();
                 firefoxOpts.setPageLoadStrategy(PageLoadStrategy.EAGER);
+                if (headless) {
+                    firefoxOpts.addArguments("-headless");
+                }
                 return new FirefoxDriver(firefoxOpts);
 
             case "edge":
                 EdgeOptions edgeOpts = new EdgeOptions();
                 edgeOpts.setPageLoadStrategy(PageLoadStrategy.EAGER);
+                if (headless) {
+                    edgeOpts.addArguments("--headless=new");
+                }
                 return new EdgeDriver(edgeOpts);
 
             default:
