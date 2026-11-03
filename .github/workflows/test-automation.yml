@@ -21,8 +21,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Check Maven
+        shell: powershell
+        run: mvn -version
+
       - name: Create credentials.properties from secrets
-        shell: pwsh
+        shell: powershell
         run: |
           $lines = @(
             "username=${{ secrets.APP_USERNAME }}",
@@ -36,19 +40,19 @@ jobs:
           $lines -join "`n" | Out-File -FilePath "src/test/resources/credentials.properties" -Encoding utf8 -NoNewline
 
       - name: Run Tests (headless)
-        shell: pwsh
+        shell: powershell
         env:
           HEADLESS: "true"
         run: mvn clean test
 
       - name: Generate Allure Report
         if: always()
-        shell: pwsh
+        shell: powershell
         run: mvn allure:report
 
       - name: Zip Allure Report
         if: always()
-        shell: pwsh
+        shell: powershell
         run: |
           if (Test-Path "target\site\allure-maven-plugin") {
             Compress-Archive -Path "target\site\allure-maven-plugin\*" -DestinationPath "allure-report.zip" -Force
@@ -56,7 +60,7 @@ jobs:
 
       - name: Send Email with Allure Report
         if: always()
-        shell: pwsh
+        shell: powershell
         run: |
           $mail = New-Object System.Net.Mail.MailMessage
           $mail.From = New-Object System.Net.Mail.MailAddress("${{ secrets.SMTP_USERNAME }}")
