@@ -105,34 +105,25 @@ jobs:
       - name: Send Email with Allure Report
         if: always()
         shell: powershell
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: |
-          $mail = New-Object System.Net.Mail.MailMessage
-          $mail.From = New-Object System.Net.Mail.MailAddress("${{ secrets.SMTP_USERNAME }}")
-          $mail.To.Add("${{ secrets.EMAIL_TO }}")
-          $mail.Subject = "Отчет о тестах: сборка #${{ github.run_number }} - ${{ job.status }}"
-          $mail.SubjectEncoding = [System.Text.Encoding]::UTF8
-
-          $body = @"
-          <h2>Результаты автотестов</h2>
-          <p><b>Проект:</b> ${{ github.repository }}</p>
-          <p><b>Номер сборки:</b> ${{ github.run_number }}</p>
-          <p><b>Статус:</b> ${{ job.status }}</p>
-          <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">Открыть запуск в GitHub Actions</a></p>
-          <p>Полный HTML-отчёт Allure во вложении.</p>
-          "@
-          $mail.Body = $body
-          $mail.BodyEncoding = [System.Text.Encoding]::UTF8
-          $mail.IsBodyHtml = $true
-
-          if (Test-Path "allure-report.zip") {
-            $attachment = New-Object System.Net.Mail.Attachment("allure-report.zip")
-            $mail.Attachments.Add($attachment)
-          }
-
-          $smtp = New-Object System.Net.Mail.SmtpClient("${{ secrets.SMTP_SERVER }}", [int]"${{ secrets.SMTP_PORT }}")
-          $smtp.EnableSsl = $true
-          $smtp.Credentials = New-Object System.Management.Automation.PSCredential(
-            "${{ secrets.SMTP_USERNAME }}",
-            (ConvertTo-SecureString "${{ secrets.SMTP_PASSWORD }}" -AsPlainText -Force)
+          # Явно читаем скрипт как UTF-8, независимо от локали Windows
+          $scriptPath = ".\scripts\send-email.ps1"
+          $content = [System.IO.File]::ReadAllText(
+              (Resolve-Path $scriptPath),
+              [System.Text.Encoding]::UTF8
           )
-          $smtp.Send($mail)
+
+          # Сохраняем во временный файл с UTF-8 BOM, чтобы PowerShell 5.1
+          # гарантированно прочитал его как UTF-8
+          $temp = Join-Path $env:TEMP "send-email-exec.ps1"
+          $utf8Bom = New-Object System.Text.UTF8Encoding $true
+          [System.IO.File]::WriteAllText($temp, $content, $utf8Bom)
+
+          # Запускаем
+          & $temp -RunNumber "${{ github.run_number }}" -Status "${{ job.status }}" -RunId "${{ github.run_id }}"
