@@ -57,6 +57,9 @@ jobs:
         env:
           HEADLESS: "true"
         run: |
+          chcp 65001 | Out-Null
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          $OutputEncoding = [System.Text.Encoding]::UTF8
           mvn -B clean test -Dtest="MarriageRegistrationTest,DeathRegistrationTest,BirthRegistrationTest,CucumberRunnerTest,MarriageApplicationApiTest,AdminRegistrationApiTest,AdminRegistrationWithDbTest,ApplicationProcessApiTest"
 
       - name: Run Tests - Phase 2 (verify data)
@@ -65,6 +68,9 @@ jobs:
         env:
           HEADLESS: "true"
         run: |
+          chcp 65001 | Out-Null
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          $OutputEncoding = [System.Text.Encoding]::UTF8
           mvn -B test -Dtest="ApplicationStatusApiTest,ApplicationsListApiTest,AdminStatusCheckTest,AdminDbVerifyTest"
 
       - name: Generate Allure Report
