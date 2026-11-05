@@ -72,7 +72,20 @@ jobs:
           [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
           $OutputEncoding = [System.Text.Encoding]::UTF8
           mvn -B test -Dtest="ApplicationStatusApiTest,ApplicationsListApiTest,AdminStatusCheckTest,AdminDbVerifyTest"
-
+      - name: Debug - check allure results
+        if: always()
+        shell: powershell
+        run: |
+          $path = "target/allure-results"
+          if (Test-Path $path) {
+            $files = Get-ChildItem $path
+            Write-Host "=== Files in $path : $($files.Count) ==="
+            $files | ForEach-Object { Write-Host "  $($_.Name)  ($($_.Length) bytes)" }
+            $resultFiles = $files | Where-Object { $_.Name -like "*-result.json" }
+            Write-Host "=== *-result.json files: $($resultFiles.Count) ==="
+          } else {
+            Write-Host "!!! $path does not exist !!!"
+          }
       - name: Generate Allure Report
         if: always()
         shell: powershell
