@@ -2,7 +2,6 @@ package tests.ui;
 
 import io.qameta.allure.*;
 import model.ui.BirthApplicationDTO;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,22 +17,12 @@ public class BirthRegistrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(BirthRegistrationTest.class);
 
-    private LoginPage loginPage;
-    private ApplicantForm applicantForm;
-    private ServiceChoicePage serviceChoicePage;
-    private CitizenForm citizenForm;
-    private BirthServiceForm birthServiceForm;
-    private ApplicationSuccessPage applicationSuccessPage;
-
-    @BeforeEach
-    public void initPages() {
-        loginPage = new LoginPage(driver);
-        applicantForm = new ApplicantForm(driver);
-        serviceChoicePage = new ServiceChoicePage(driver);
-        citizenForm = new CitizenForm(driver);
-        birthServiceForm = new BirthServiceForm(driver);
-        applicationSuccessPage = new ApplicationSuccessPage(driver);
-    }
+    private LoginPage loginPage = new LoginPage(driver);
+    private ApplicantForm applicantForm = new ApplicantForm(driver);
+    private ServiceChoicePage serviceChoicePage = new ServiceChoicePage(driver);
+    private CitizenForm citizenForm = new CitizenForm(driver);
+    private BirthServiceForm birthServiceForm = new BirthServiceForm(driver);
+    private ApplicationSuccessPage applicationSuccessPage = new ApplicationSuccessPage(driver);
 
     @Test
     @Severity(SeverityLevel.CRITICAL)
