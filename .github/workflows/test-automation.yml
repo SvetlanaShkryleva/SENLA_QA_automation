@@ -52,11 +52,20 @@ jobs:
             if ($parts.Length -eq 2) { Write-Host "  $($parts[0]) -> length $($parts[1].Length)" }
           }
 
-      - name: Run Tests (headless)
+      - name: Run Tests - Phase 1 (create data)
         shell: powershell
         env:
           HEADLESS: "true"
-        run: mvn -B clean test
+        run: |
+          mvn -B clean test -Dtest="MarriageRegistrationTest,DeathRegistrationTest,BirthRegistrationTest,CucumberRunnerTest,MarriageApplicationApiTest,AdminRegistrationApiTest,AdminRegistrationWithDbTest,ApplicationProcessApiTest"
+
+      - name: Run Tests - Phase 2 (verify data)
+        if: always()
+        shell: powershell
+        env:
+          HEADLESS: "true"
+        run: |
+          mvn -B test -Dtest="ApplicationStatusApiTest,ApplicationsListApiTest,AdminStatusCheckTest,AdminDbVerifyTest"
 
       - name: Generate Allure Report
         if: always()
@@ -69,6 +78,9 @@ jobs:
         run: |
           if (Test-Path "target\site\allure-maven-plugin") {
             Compress-Archive -Path "target\site\allure-maven-plugin\*" -DestinationPath "allure-report.zip" -Force
+            Write-Host "Zipped: allure-report.zip"
+          } else {
+            Write-Host "Allure report directory not found - skipping zip"
           }
 
       - name: Send Email with Allure Report
