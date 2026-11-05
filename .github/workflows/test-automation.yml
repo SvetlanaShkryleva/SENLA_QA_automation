@@ -37,18 +37,31 @@ jobs:
             "db.password=${{ secrets.DB_PASSWORD }}"
           )
           New-Item -ItemType Directory -Force -Path "src/test/resources" | Out-Null
-          $lines -join "`n" | Out-File -FilePath "src/test/resources/credentials.properties" -Encoding utf8 -NoNewline
+          $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+          [System.IO.File]::WriteAllLines("$PWD\src\test\resources\credentials.properties", $lines, $utf8NoBom)
+
+      - name: Verify credentials file (no secrets shown)
+        shell: powershell
+        run: |
+          $file = "src/test/resources/credentials.properties"
+          $bytes = [System.IO.File]::ReadAllBytes("$PWD\$file")
+          $hasBom = $bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF
+          Write-Host "Has BOM: $hasBom (must be False)"
+          Get-Content $file | ForEach-Object {
+            $parts = $_ -split '=', 2
+            if ($parts.Length -eq 2) { Write-Host "  $($parts[0]) -> length $($parts[1].Length)" }
+          }
 
       - name: Run Tests (headless)
         shell: powershell
         env:
           HEADLESS: "true"
-        run: mvn clean test
+        run: mvn -B clean test
 
       - name: Generate Allure Report
         if: always()
         shell: powershell
-        run: mvn allure:report
+        run: mvn -B allure:report
 
       - name: Zip Allure Report
         if: always()
