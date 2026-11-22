@@ -24,7 +24,6 @@ public class ApplicationSuccessPage extends BasePage {
     private static final Pattern APPLICATION_NUMBER_PATTERN =
             Pattern.compile("Ваша заявка\\s*№\\s*(\\d+)");
 
-    // Модальное окно MUI
     private final By successModal =
             By.cssSelector("div.MuiModal-root.MuiDialog-root");
 

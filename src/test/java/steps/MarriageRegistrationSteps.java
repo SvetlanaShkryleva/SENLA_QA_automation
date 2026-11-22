@@ -36,14 +36,14 @@ public class MarriageRegistrationSteps extends BaseTest {
     private MarriageApplicationDTO data;
     private String applicationNumber;
 
-    // ===================== ХУКИ =====================
-
+    /**
+     * ===================== ХУКИ =====================
+     */
     @Before
     public void beforeScenario(Scenario scenario) {
         logger.info("=== СТАРТ сценария: '{}' | Теги: {} ===",
                 scenario.getName(), scenario.getSourceTagNames());
 
-        // JUnit @BeforeEach под Cucumber НЕ выполняется — вызываем вручную.
         openApp();
 
         initPages();
@@ -55,7 +55,6 @@ public class MarriageRegistrationSteps extends BaseTest {
         logger.info("=== КОНЕЦ сценария: '{}' | Статус: {} ===",
                 scenario.getName(), scenario.getStatus());
 
-        // JUnit @AfterEach под Cucumber НЕ выполняется — вызываем вручную.
         try {
             tearDown();
             logger.info("Драйвер закрыт");
@@ -73,8 +72,9 @@ public class MarriageRegistrationSteps extends BaseTest {
         applicationSuccessPage = new ApplicationSuccessPage(driver);
     }
 
-    // ===================== ШАГИ =====================
-    // (без изменений, как в предыдущем ответе)
+    /**
+     * ===================== ШАГИ =====================
+     */
     @Дано("пользователь авторизован на портале ЗАГС")
     public void userAuthorized() {
         logger.info("Шаг: авторизация пользователя на портале ЗАГС");

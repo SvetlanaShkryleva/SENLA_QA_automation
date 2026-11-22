@@ -39,9 +39,6 @@ public class BrowserFactory {
         BrowserConfig config = ConfigReader.read();
         String browser = config.getBrowser().toLowerCase();
 
-        // headless включается через:
-        //   - переменную окружения HEADLESS=true  (используется в CI)
-        //   - системное свойство -Dheadless=true  (для локальных запусков)
         boolean headless = Boolean.parseBoolean(
                 System.getProperty("headless",
                         System.getenv().getOrDefault("HEADLESS", "false"))

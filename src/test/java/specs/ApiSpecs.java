@@ -22,11 +22,10 @@ public class ApiSpecs {
         auth.setUserName(creds.getUsername());
         auth.setPassword(creds.getPassword());
 
-        // Таймауты: 10 секунд на соединение, 30 секунд на чтение
         RestAssuredConfig config = RestAssuredConfig.config()
                 .httpClient(HttpClientConfig.httpClientConfig()
-                                        .setParam("http.connection.timeout", 30_000)   // 30 сек на соединение
-                                        .setParam("http.socket.timeout", 60_000));     // 60 сек на чтение
+                                        .setParam("http.connection.timeout", 30_000)
+                                        .setParam("http.socket.timeout", 60_000));
         return new RequestSpecBuilder()
                 .setBaseUri("https://regoffice.senla.eu")
                 .setContentType("application/json")

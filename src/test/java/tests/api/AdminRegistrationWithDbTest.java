@@ -50,28 +50,28 @@ public class AdminRegistrationWithDbTest {
         logger.info("Создан администратор через API: staffId={}", staffId);
 
         // 2. Проверяем запись в БД
-        Map<String, Object> row = DbHelper.querySingleRow(
+        Map<String, Object> adminEntity = DbHelper.querySingleRow(
                 "SELECT * FROM reg_office.staff WHERE staffid = ?", staffId);
 
-        assertNotNull(row, "Админ staffId=" + staffId + " не найден в БД");
+        assertNotNull(adminEntity, "Админ staffId=" + staffId + " не найден в БД");
 
         // 3. Сверяем поля
         assertAll(
-                () -> assertEquals(request.getPersonalLastName(), row.get("surname"),
+                () -> assertEquals(request.getPersonalLastName(), adminEntity.get("surname"),
                         "Фамилия не совпадает"),
-                () -> assertEquals(request.getPersonalFirstName(), row.get("name"),
+                () -> assertEquals(request.getPersonalFirstName(), adminEntity.get("name"),
                         "Имя не совпадает"),
-                () -> assertEquals(request.getPersonalMiddleName(), row.get("middlename"),
+                () -> assertEquals(request.getPersonalMiddleName(), adminEntity.get("middlename"),
                         "Отчество не совпадает"),
-                () -> assertEquals(request.getPersonalNumberOfPassport(), row.get("passportnumber"),
+                () -> assertEquals(request.getPersonalNumberOfPassport(), adminEntity.get("passportnumber"),
                         "Номер паспорта не совпадает"),
-                () -> assertEquals(request.getPersonalPhoneNumber(), row.get("phonenumber"),
+                () -> assertEquals(request.getPersonalPhoneNumber(), adminEntity.get("phonenumber"),
                         "Телефон не совпадает"),
-                () -> assertEquals(request.getDateofbirth(), String.valueOf(row.get("dateofbirth")),
+                () -> assertEquals(request.getDateofbirth(), String.valueOf(adminEntity.get("dateofbirth")),
                         "Дата рождения не совпадает")
         );
 
-        logger.info("Данные админа staffId={} подтверждены в БД: {}", staffId, row);
+        logger.info("Данные админа staffId={} подтверждены в БД: {}", staffId, adminEntity);
         logger.info("=== УСПЕШНОЕ ЗАВЕРШЕНИЕ createAdminAndVerifyInDb ===");
     }
 }

@@ -46,21 +46,21 @@ public class AdminDbVerifyTest {
         int staffId = AdminStaffIdStorage.read();
         logger.info("Прочитан staffId из файла: {}", staffId);
 
-        Map<String, Object> row = DbHelper.querySingleRow(
+        Map<String, Object> adminEntity = DbHelper.querySingleRow(
                 "SELECT * FROM reg_office.staff WHERE staffid = ?", staffId);
 
-        assertNotNull(row, "Админ staffId=" + staffId + " не найден в БД");
-        logger.info("Найдена запись в БД: {}", row);
+        assertNotNull(adminEntity, "Админ staffId=" + staffId + " не найден в БД");
+        logger.info("Найдена запись в БД: {}", adminEntity);
 
         AdminRequestDTO expected = TestDataReader.readAdminRequest();
 
         assertAll(
-                () -> assertEquals(expected.getPersonalLastName(),   row.get("surname"),        "Фамилия не совпадает"),
-                () -> assertEquals(expected.getPersonalFirstName(),  row.get("name"),           "Имя не совпадает"),
-                () -> assertEquals(expected.getPersonalMiddleName(), row.get("middlename"),     "Отчество не совпадает"),
-                () -> assertEquals(expected.getPersonalNumberOfPassport(), row.get("passportnumber"), "Паспорт не совпадает"),
-                () -> assertEquals(expected.getPersonalPhoneNumber(), row.get("phonenumber"),    "Телефон не совпадает"),
-                () -> assertEquals(expected.getDateofbirth(), String.valueOf(row.get("dateofbirth")), "Дата рождения не совпадает")
+                () -> assertEquals(expected.getPersonalLastName(),   adminEntity.get("surname"),        "Фамилия не совпадает"),
+                () -> assertEquals(expected.getPersonalFirstName(),  adminEntity.get("name"),           "Имя не совпадает"),
+                () -> assertEquals(expected.getPersonalMiddleName(), adminEntity.get("middlename"),     "Отчество не совпадает"),
+                () -> assertEquals(expected.getPersonalNumberOfPassport(), adminEntity.get("passportnumber"), "Паспорт не совпадает"),
+                () -> assertEquals(expected.getPersonalPhoneNumber(), adminEntity.get("phonenumber"),    "Телефон не совпадает"),
+                () -> assertEquals(expected.getDateofbirth(), String.valueOf(adminEntity.get("dateofbirth")), "Дата рождения не совпадает")
         );
 
         logger.info("=== УСПЕШНОЕ ЗАВЕРШЕНИЕ verifyAdminInDb ===");
