@@ -41,6 +41,10 @@ public class ConfigReader {
         creds.setUsername(props.getProperty("username"));
         creds.setPassword(props.getProperty("password"));
         creds.setBaseUrl(props.getProperty("baseUrl"));
+        creds.setDbUrl(props.getProperty("db.url"));
+        creds.setDbUser(props.getProperty("db.user"));
+        creds.setDbPassword(props.getProperty("db.password"));
+
         return creds;
     }
 }

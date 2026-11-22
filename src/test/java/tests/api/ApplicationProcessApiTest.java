@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import specs.ApiSpecs;
-import utils.AdminRequestBuilder;
-import utils.UserRequestBuilder;
+import utils.TestDataReader;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Epic("ЗАГС API")
 @Feature("Обработка заявок")
@@ -35,7 +35,7 @@ public class ApplicationProcessApiTest {
         // 1. Создаём заявку через API
         UserResponseWrapperDTO wrapper = given()
                 .spec(ApiSpecs.requestSpec())
-                .body(UserRequestBuilder.weddingRequest())
+                .body(TestDataReader.readWeddingRequest())
                 .post("/sendUserRequest")
                 .then()
                 .body("data.applicationid", notNullValue())
@@ -44,10 +44,10 @@ public class ApplicationProcessApiTest {
         int applId = wrapper.getData().getApplicationid();
         logger.info("Создана заявка для одобрения: applId={}", applId);
 
-        // 2. Создаём админа через API
+        // 2. Создаём админа через API (данные из JSON)
         int staffId = given()
                 .spec(ApiSpecs.requestSpec())
-                .body(AdminRequestBuilder.validAdmin())
+                .body(TestDataReader.readAdminRequest())
                 .post("/sendAdminRequest")
                 .then()
                 .body("data.staffid", notNullValue())
@@ -95,8 +95,8 @@ public class ApplicationProcessApiTest {
 
         logger.info("Финальный статус заявки {}: '{}'", applId, finalStatus);
 
-        assert finalStatus.equals("approved")
-                : "Ожидался статус 'approved', получен: '" + finalStatus + "'";
+        assertEquals("approved", finalStatus,
+                "Ожидался статус 'approved', получен: '" + finalStatus + "'");
 
         logger.info("=== УСПЕШНОЕ ЗАВЕРШЕНИЕ approveApplication ===");
     }
