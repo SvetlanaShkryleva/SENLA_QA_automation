@@ -44,7 +44,7 @@ public class MarriageRegistrationSteps extends BaseTest {
         logger.info("=== СТАРТ сценария: '{}' | Теги: {} ===",
                 scenario.getName(), scenario.getSourceTagNames());
 
-        openApp();
+        openApp("MarriageRegistrationSteps");
 
         initPages();
         logger.info("Страницы инициализированы, драйвер готов");

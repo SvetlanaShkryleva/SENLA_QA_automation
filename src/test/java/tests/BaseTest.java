@@ -1,3 +1,4 @@
+
 package tests;
 
 import config.ConfigReader;
@@ -5,6 +6,7 @@ import config.Credentials;
 import factory.BrowserFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
@@ -13,12 +15,26 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BaseTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(BaseTest.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(BaseTest.class);
 
-    protected WebDriver driver = BrowserFactory.getDriver();
+    protected WebDriver driver;
 
+    // JUnit 5: автоматический запуск перед каждым тестом
     @BeforeEach
-    public void openApp() {
+    public void openApp(TestInfo testInfo) {
+        String testName = testInfo.getTestClass()
+                .map(Class::getSimpleName)
+                .orElse("unknown-test");
+
+        openApp(testName);
+    }
+
+    // Общий метод запуска браузера для JUnit и Cucumber
+    protected void openApp(String testName) {
+        BrowserFactory.setVideoName(testName);
+        driver = BrowserFactory.getDriver();
+
         Credentials creds = ConfigReader.readCredentials();
 
         String selenoidUrl = System.getProperty("selenoid.url",
@@ -32,7 +48,8 @@ public abstract class BaseTest {
             logger.info("Открываем приложение (remote, creds in URL): {}", creds.getBaseUrl());
         } else {
             if (driver instanceof HasAuthentication hasAuth) {
-                hasAuth.register(UsernameAndPassword.of(creds.getUsername(), creds.getPassword()));
+                hasAuth.register(UsernameAndPassword.of(
+                        creds.getUsername(), creds.getPassword()));
             }
             url = creds.getBaseUrl();
             logger.info("Открываем приложение (local, HasAuthentication): {}", creds.getBaseUrl());
