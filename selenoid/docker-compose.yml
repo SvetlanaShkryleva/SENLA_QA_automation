@@ -2,21 +2,23 @@ version: '3'
 services:
   selenoid:
     image: aerokube/selenoid:1.11.3
-    network_mode: bridge
     ports:
       - "4444:4444"
     volumes:
       - "./browser.json:/etc/selenoid/browsers.json"
-      - "/var/run/docker.sock:/var/run/docker.sock" # Для запуска контейнеров
+      - "/var/run/docker.sock:/var/run/docker.sock"
       - "./video:/opt/selenoid/video"
-    command: ["-conf", "/etc/selenoid/browsers.json"]
+    command:
+      - "-conf"
+      - "/etc/selenoid/browsers.json"
+      - "-container-network"
+      - "selenoid_default"
     environment:
       - DOCKER_API_VERSION=1.44
       - OVERRIDE_VIDEO_OUTPUT_DIR=D:/Senla AQA Module 1-5/SenlaJava/selenoid/video
 
   selenoid-ui:
     image: "aerokube/selenoid-ui:latest-release"
-    network_mode: bridge
     ports:
       - "8080:8080"
     depends_on:
