@@ -43,3 +43,6 @@ config.properties
 
 # Allure (локальный кеш)
 .allure/
+
+# Selenoid video recordings
+/selenoid/video/

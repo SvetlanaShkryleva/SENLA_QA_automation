@@ -21,13 +21,24 @@ public abstract class BaseTest {
     public void openApp() {
         Credentials creds = ConfigReader.readCredentials();
 
-        // Регистрируем Basic Auth без передачи кредов в URL
-        if (driver instanceof HasAuthentication hasAuth) {
-            hasAuth.register(UsernameAndPassword.of(creds.getUsername(), creds.getPassword()));
+        String selenoidUrl = System.getProperty("selenoid.url",
+                System.getenv().getOrDefault("SELENOID_URL", ""));
+        boolean isRemote = selenoidUrl != null && !selenoidUrl.isEmpty();
+
+        String url;
+        if (isRemote) {
+            url = "https://" + creds.getUsername() + ":" + creds.getPassword() + "@"
+                    + creds.getBaseUrl().replaceFirst("^https?://", "");
+            logger.info("Открываем приложение (remote, creds in URL): {}", creds.getBaseUrl());
+        } else {
+            if (driver instanceof HasAuthentication hasAuth) {
+                hasAuth.register(UsernameAndPassword.of(creds.getUsername(), creds.getPassword()));
+            }
+            url = creds.getBaseUrl();
+            logger.info("Открываем приложение (local, HasAuthentication): {}", creds.getBaseUrl());
         }
 
-        logger.info("Открываем приложение: {}", creds.getBaseUrl());
-        driver.get(creds.getBaseUrl());
+        driver.get(url);
     }
 
     @AfterEach
