@@ -1,0 +1,6 @@
+.git
+.idea
+.allure
+target
+selenoid/video
+**/credentials.properties
